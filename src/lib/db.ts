@@ -1,6 +1,5 @@
-import Database from 'better-sqlite3';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import { PrismaD1 } from '@prisma/adapter-d1';
 
@@ -31,6 +30,8 @@ function getLocalDb() {
   }
 
   try {
+    // Dynamic import to prevent better-sqlite3 from bundling into Cloudflare Worker
+    const Database = require('better-sqlite3');
     localDbInstance = new Database(dbPath);
     try {
       localDbInstance.pragma('journal_mode = WAL');
