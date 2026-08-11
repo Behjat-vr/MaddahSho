@@ -10,6 +10,7 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "pages_build_output_dir": ".open-next/assets",
   "d1_databases": [
     {
       "binding": "DB",
