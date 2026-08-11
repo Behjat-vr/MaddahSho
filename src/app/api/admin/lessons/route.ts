@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (user.role !== 'ADMIN') return forbiddenResponse();
 
   try {
-    const body = await req.json();
+    const body = await req.json() as { courseId?: string; title?: string; description?: string; duration?: string; order?: number };
     const { courseId, title, description, duration, order } = body;
 
     if (!courseId || !title) {

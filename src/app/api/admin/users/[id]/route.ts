@@ -13,7 +13,7 @@ export async function PUT(
   const { id } = await params;
 
   try {
-    const body = await req.json();
+    const body = await req.json() as { role?: string };
     const { role } = body;
 
     if (role && ['USER', 'ADMIN'].includes(role)) {

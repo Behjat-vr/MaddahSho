@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
   if (user.role !== 'ADMIN') return forbiddenResponse();
 
   try {
-    const body = await req.json();
-    const { userId, courseId, action } = body; // action: 'grant' | 'revoke'
+    const body = await req.json() as { userId?: string; courseId?: string; action?: string };
+    const { userId, courseId, action } = body;
 
     if (!userId || !courseId) {
       return errorResponse('کاربر و دوره الزامی هستند.', 400);

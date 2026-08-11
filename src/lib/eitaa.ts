@@ -24,7 +24,7 @@ export async function sendEitaaMessage(
       }),
     });
 
-    const data = await response.json();
+    const data = (await response.json()) as { ok?: boolean };
     return data.ok === true;
   } catch (error) {
     console.error('Eitaa Send Error:', error);

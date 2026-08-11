@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const res = await fetch('/api/users/me');
       if (res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as { user: User; enrollments?: Enrollment[] };
         setUser(data.user);
         setEnrollments(data.enrollments || []);
       } else {
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; message?: string; code?: string };
       if (!res.ok) return { success: false, message: data.error };
       return { success: true, message: data.message, code: data.code };
     } catch {
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, phone, code }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; user: User; registrationCode?: string };
       if (!res.ok) return { success: false, message: data.error };
       setUser(data.user);
       await refreshUserData();
@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone, registrationCode }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; user: User };
       if (!res.ok) return { success: false, message: data.error };
       setUser(data.user);
       await refreshUserData();
@@ -116,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; paymentUrl?: string; message?: string };
       if (!res.ok) return { success: false, message: data.error };
 
       if (data.paymentUrl) {

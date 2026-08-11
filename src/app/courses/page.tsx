@@ -34,7 +34,7 @@ export default function CoursesPage() {
       try {
         const res = await fetch('/api/courses');
         if (res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as { courses?: typeof courses };
           if (data.courses && data.courses.length > 0) {
             setCourses(data.courses);
           }

@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifyToken } from '@/lib/jwt';
 
+export const runtime = 'experimental-edge';
+
 const PROTECTED_ROUTES = ['/home', '/courses', '/profile'];
 const ADMIN_ROUTES = ['/admin'];
 const AUTH_ROUTES = ['/auth/login', '/auth/register'];

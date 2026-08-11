@@ -110,22 +110,22 @@ export default function AdminPage() {
       // 1. Fetch Stats & Exercises
       const statsRes = await fetch('/api/admin/stats');
       if (statsRes.ok) {
-        const statsData = await statsRes.json();
-        setStats(statsData.stats || {});
+        const statsData = (await statsRes.json()) as { stats?: typeof stats; recentExercises?: ExerciseSubmission[] };
+        setStats(statsData.stats || stats);
         setRecentExercises(statsData.recentExercises || []);
       }
 
       // 2. Fetch Courses
       const coursesRes = await fetch('/api/courses');
       if (coursesRes.ok) {
-        const coursesData = await coursesRes.json();
+        const coursesData = (await coursesRes.json()) as { courses?: Course[] };
         setCourses(coursesData.courses || []);
       }
 
       // 3. Fetch Users
       const usersRes = await fetch('/api/admin/users');
       if (usersRes.ok) {
-        const usersData = await usersRes.json();
+        const usersData = (await usersRes.json()) as { users?: UserItem[] };
         setUsers(usersData.users || []);
       }
     } catch (err) {
@@ -156,7 +156,7 @@ export default function AdminPage() {
           setEditingCourse(null);
           fetchAdminData();
         } else {
-          const err = await res.json();
+          const err = (await res.json()) as { error?: string };
           alert(err.error || 'خطا در ثبت تغییرات');
         }
       } else {
@@ -171,7 +171,7 @@ export default function AdminPage() {
           setShowCourseModal(false);
           fetchAdminData();
         } else {
-          const err = await res.json();
+          const err = (await res.json()) as { error?: string };
           alert(err.error || 'خطا در ایجاد دوره');
         }
       }
