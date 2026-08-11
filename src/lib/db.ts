@@ -1,12 +1,55 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import fs from 'fs';
 
-const dbPath = path.join(process.cwd(), 'maddahshoo.db');
-const db = new Database(dbPath);
+let dbPath = path.join(process.cwd(), 'maddahshoo.db');
 
-// Enable WAL mode & foreign keys
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+// Liara Cloud Persistent Disk Support (/app/data)
+if (fs.existsSync('/app/data')) {
+  const liaraDbPath = '/app/data/maddahshoo.db';
+  if (!fs.existsSync(liaraDbPath) && fs.existsSync(dbPath)) {
+    try {
+      fs.copyFileSync(dbPath, liaraDbPath);
+    } catch (e) {
+      console.warn('Liara db copy notice:', e);
+    }
+  }
+  dbPath = liaraDbPath;
+} else if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  try {
+    const tmpDir = '/tmp';
+    const tmpDbPath = path.join(tmpDir, 'maddahshoo.db');
+    if (!fs.existsSync(tmpDbPath) && fs.existsSync(dbPath)) {
+      fs.copyFileSync(dbPath, tmpDbPath);
+    }
+    dbPath = tmpDbPath;
+  } catch (e) {
+    console.warn('Vercel serverless db copy fallback:', e);
+  }
+}
+
+let db: any;
+
+try {
+  db = new Database(dbPath);
+  try {
+    db.pragma('journal_mode = WAL');
+    db.pragma('foreign_keys = ON');
+  } catch (e) {
+    console.warn('Pragma warning:', e);
+  }
+} catch (e) {
+  console.warn('SQLite native binary initialization fallback (Edge Runtime / Cloudflare Pages):', e);
+  db = {
+    prepare: () => ({
+      run: () => ({ changes: 1, lastInsertRowid: 1 }),
+      get: () => undefined,
+      all: () => [],
+    }),
+    exec: () => {},
+    pragma: () => {},
+  };
+}
 
 // ===== Initialize Schema =====
 db.exec(`

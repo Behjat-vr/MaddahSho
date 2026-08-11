@@ -21,6 +21,11 @@ export default function RootLayout({
           rel="stylesheet"
           type="text/css"
         />
+        <link
+          href="https://cdn.jsdelivr.net/gh/fontiran/iransans@v1.0.0/css/iransans.css"
+          rel="stylesheet"
+          type="text/css"
+        />
       </head>
       <body>
         <AuthProvider>

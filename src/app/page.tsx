@@ -3,7 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import ParticleBackground from '@/components/ui/ParticleBackground';
-import { Mic, ArrowLeft, Sparkles, AudioWaveform } from 'lucide-react';
+import ThreeDMicrophone from '@/components/ui/ThreeDMicrophone';
+import { ArrowLeft, Sparkles, AudioWaveform, Mic } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -61,20 +62,9 @@ export default function LandingPage() {
 
       {/* Content */}
       <div className="hero-content">
-        {/* Mic Icon */}
-        <div className="animate-fade-in-up" style={{
-          width: '80px',
-          height: '80px',
-          borderRadius: '50%',
-          background: 'rgba(212, 168, 83, 0.1)',
-          border: '2px solid rgba(212, 168, 83, 0.25)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto var(--space-8)',
-          boxShadow: 'var(--shadow-glow-gold)',
-        }}>
-          <Mic size={32} color="var(--accent-gold)" />
+        {/* 3D Microphone Showcase with Interactive Animation */}
+        <div className="animate-fade-in-up" style={{ marginBottom: 'var(--space-4)' }}>
+          <ThreeDMicrophone size={320} />
         </div>
 
         {/* Title */}
