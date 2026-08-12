@@ -1,0 +1,199 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  engineType      = "client"
+  output          = "../src/generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ===== User =====
+model User {
+  id               String   @id @default(uuid())
+  firstName        String
+  lastName         String
+  phone            String   @unique
+  registrationCode String   @unique
+  role             String   @default("USER") // USER | ADMIN
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  otps          OTP[]
+  enrollments   Enrollment[]
+  exercises     ExerciseSubmission[]
+  supportConvos SupportConversation[]
+  notifications Notification[]
+}
+
+// ===== OTP =====
+model OTP {
+  id        String   @id @default(uuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+}
+
+// ===== Course =====
+model Course {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  longDescription String
+  instructor      String
+  level           String   @default("BEGINNER") // BEGINNER | INTERMEDIATE | ADVANCED
+  price           Int      @default(0)
+  status          String   @default("DRAFT") // DRAFT | UPCOMING | OPEN_FOR_REGISTRATION | CLOSED | ARCHIVED
+  sessionsCount   Int      @default(0)
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  lessons       Lesson[]
+  enrollments   Enrollment[]
+  exercises     ExerciseSubmission[]
+  supportConvos SupportConversation[]
+  knowledgeDocs KnowledgeDocument[]
+  aiConfig      CourseAIConfig?
+}
+
+// ===== Lesson =====
+model Lesson {
+  id          String @id @default(uuid())
+  courseId    String
+  title       String
+  description String
+  order       Int
+  duration    String
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+// ===== Enrollment =====
+model Enrollment {
+  id         String   @id @default(uuid())
+  userId     String
+  courseId   String
+  progress   Int      @default(0)
+  enrolledAt DateTime @default(now())
+
+  // Payment info
+  paymentAuthority String?
+  paymentRefId     String?
+  paymentStatus    String  @default("PENDING") // PENDING | PAID | FAILED
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+// ===== Exercise Submission =====
+model ExerciseSubmission {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  title     String
+  audioUrl  String?
+  duration  Int      @default(0)
+  score     Int?
+  status    String   @default("PENDING") // PENDING | PROCESSING | COMPLETED | FAILED
+  createdAt DateTime @default(now())
+
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  analysis ExerciseAnalysis?
+}
+
+// ===== Exercise Analysis =====
+model ExerciseAnalysis {
+  id               String   @id @default(uuid())
+  exerciseId       String   @unique
+  overallScore     Int
+  strengthsJson    String // JSON array
+  improvementsJson String // JSON array
+  detailsJson      String // JSON array of {label, score, maxScore}
+  aiRecommendation String
+  nextExercise     String
+  createdAt        DateTime @default(now())
+
+  exercise ExerciseSubmission @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+}
+
+// ===== AI Support Conversation =====
+model SupportConversation {
+  id           String   @id @default(uuid())
+  userId       String
+  courseId     String
+  messagesUsed Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  messages SupportMessage[]
+
+  @@unique([userId, courseId])
+}
+
+// ===== Support Message =====
+model SupportMessage {
+  id             String   @id @default(uuid())
+  conversationId String
+  role           String // user | assistant
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation SupportConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+// ===== Knowledge Base Document =====
+model KnowledgeDocument {
+  id        String   @id @default(uuid())
+  courseId  String
+  type      String // LESSON | FAQ | NOTES | PDF
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+// ===== Course AI Configuration =====
+model CourseAIConfig {
+  id           String   @id @default(uuid())
+  courseId     String   @unique
+  systemPrompt String
+  model        String   @default("gpt-4o-mini")
+  temperature  Float    @default(0.7)
+  maxTokens    Int      @default(1024)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+// ===== System Settings =====
+model SystemSetting {
+  id          String @id @default(uuid())
+  key         String @unique
+  value       String
+  description String @default("")
+}
+
+// ===== Notification =====
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

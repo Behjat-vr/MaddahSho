@@ -209,23 +209,23 @@ export default function ThreeDMicrophone({ size = 320 }: ThreeDMicrophoneProps) 
 
       // Gold Accent Band around Mic Neck
       const neckGrad = ctx.createLinearGradient(-bodyWidth / 2, 0, bodyWidth / 2, 0);
-      neckGrad.addColorStop(0, '#805a1e');
-      neckGrad.addColorStop(0.3, '#f5d78e');
-      neckGrad.addColorStop(0.7, '#d4a853');
-      neckGrad.addColorStop(1, '#604212');
+      neckGrad.addColorStop(0, '#B88620');
+      neckGrad.addColorStop(0.3, '#F6D58A');
+      neckGrad.addColorStop(0.7, '#E7B84B');
+      neckGrad.addColorStop(1, '#870016');
 
       ctx.fillStyle = neckGrad;
       ctx.fillRect(-bodyWidth / 2, bodyY - 4, bodyWidth, 6);
 
       // Gold Engraved Brand Badge "مداح شو"
-      ctx.fillStyle = 'rgba(212, 168, 83, 0.15)';
+      ctx.fillStyle = 'rgba(231, 184, 75, 0.15)';
       ctx.fillRect(-14, bodyY + 18, 28, 24);
-      ctx.strokeStyle = '#d4a853';
+      ctx.strokeStyle = '#E7B84B';
       ctx.lineWidth = 1;
       ctx.strokeRect(-14, bodyY + 18, 28, 24);
 
       // Brand Logo Text inside Badge
-      ctx.fillStyle = '#e8c373';
+      ctx.fillStyle = '#A9001C';
       ctx.font = 'bold 9px Vazirmatn, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
