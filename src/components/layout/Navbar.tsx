@@ -27,7 +27,17 @@ export default function Navbar() {
                 <Link href="/courses" className="navbar-link">دوره‌ها</Link>
                 <Link href="/profile" className="navbar-link">پروفایل</Link>
                 {isAdmin && (
-                  <Link href="/admin" className="navbar-link">پنل مدیریت</Link>
+                  <Link href="/admin" className="btn btn-primary btn-sm" style={{
+                    background: 'var(--brand-red)',
+                    color: '#FFFFFF',
+                    fontWeight: 'bold',
+                    padding: '4px 12px',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: 'var(--font-size-xs)',
+                  }}>
+                    <LayoutDashboard size={14} />
+                    پنل مدیریت
+                  </Link>
                 )}
               </>
             )}

@@ -9,6 +9,9 @@ import {
   Edit3, CheckCircle, XCircle, ShieldCheck, UserPlus, Play, Pause, AlertCircle, RefreshCw
 } from 'lucide-react';
 
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+
 type AdminTab = 'dashboard' | 'courses' | 'users' | 'exercises' | 'ai';
 
 interface Course {
@@ -52,9 +55,19 @@ interface ExerciseSubmission {
 }
 
 export default function AdminPage() {
+  const { user, isAuthenticated, isAdmin, isLoading: authLoading } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated || !isAdmin) {
+        router.push('/auth/login');
+      }
+    }
+  }, [isAuthenticated, isAdmin, authLoading, router]);
 
   // Data states
   const [courses, setCourses] = useState<Course[]>([]);

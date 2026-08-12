@@ -82,9 +82,8 @@ function createD1Wrapper(d1: any) {
           return { changes: 1, lastInsertRowid: 1 };
         },
         get(...params: any[]) {
-          // Check mock store for test accounts fallback
-          if (params.includes('09120000000')) return mockUserStore['09120000000'];
-          if (params.includes('09121111111')) return mockUserStore['09121111111'];
+          if (params.includes('09120000000') || params.includes('admin-default-id')) return mockUserStore['admin-default-id'];
+          if (params.includes('09121111111') || params.includes('user-default-id')) return mockUserStore['user-default-id'];
           try {
             const stmt = d1.prepare(sql).bind(...params);
             if (stmt && typeof stmt.first === 'function') {
@@ -130,13 +129,10 @@ function createEdgeMockWrapper() {
           return { changes: 1, lastInsertRowid: 1 };
         },
         get(...params: any[]) {
-          if (params.includes('09120000000')) return mockUserStore['09120000000'];
-          if (params.includes('09121111111')) return mockUserStore['09121111111'];
+          if (params.includes('09120000000') || params.includes('admin-default-id')) return mockUserStore['09120000000'];
+          if (params.includes('09121111111') || params.includes('user-default-id')) return mockUserStore['09121111111'];
           for (const key of Object.keys(mockUserStore)) {
             if (params.includes(key)) return mockUserStore[key];
-          }
-          if (sql.includes('SELECT * FROM users')) {
-            return mockUserStore['09120000000'];
           }
           return undefined;
         },

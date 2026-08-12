@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/layout/Navbar';
 import CourseCard from '@/components/course/CourseCard';
@@ -74,6 +75,29 @@ export default function HomePage() {
           </div>
 
           <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+            {/* Admin Quick Banner */}
+            {user?.role === 'ADMIN' && (
+              <div style={{
+                padding: 'var(--space-4) var(--space-6)',
+                background: 'var(--brand-red-light)',
+                border: '1px solid var(--brand-red)',
+                borderRadius: 'var(--radius-lg)',
+                marginBottom: 'var(--space-6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 'var(--space-3)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', color: 'var(--brand-red)', fontWeight: 'bold' }}>
+                  🛡️ شما با حساب مدیریت (ادمین) وارد شده‌اید.
+                </div>
+                <Link href="/admin" className="btn btn-primary btn-sm">
+                  ورود مستقیم به پنل مدیریت
+                </Link>
+              </div>
+            )}
+
             {/* Greeting */}
             <div className="animate-fade-in-up">
               <p style={{
